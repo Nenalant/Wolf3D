@@ -7,8 +7,8 @@
 # include <stdlib.h>
 # include <stdio.h>
 
-// # define WIDTH 800
-// # define HEIGHT 800
+# define HEIGHT 800
+# define WIDTH 600
 // # define PUT_STRING(fd, s) (write(fd, s, sizeof(s) - 1))
 
 typedef	struct		s_win
@@ -20,6 +20,9 @@ typedef	struct		s_win
 	int		bpp;
 	int		size_line;
 	int		endian;
+	int		r;
+	int		g;
+	int		b;
 	// int		win_x;
 	// int		win_y;
 }					t_win;
