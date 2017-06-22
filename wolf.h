@@ -6,6 +6,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
+# include <math.c>
 
 // # define PUT_STRING(fd, s) (write(fd, s, sizeof(s) - 1))
 
@@ -25,8 +26,32 @@ typedef	struct		s_win
 	int		win_y;
 }					t_win;
 
-// typedef	struct		s_cal
-// {
+typedef	struct		s_cal
+{
+	double	pos_of_player_x;
+	double	pos_of_player_y;
+	double	dir_of_player_x;
+	double	dir_of_player_y;
+	double	cam_plane_of_player_x;
+	double	cam_plane_of_player_y;
+	double	camera_x;
+	int		x;
+	int		w;
+	double	ray_pox_x;
+	double	ray_pos_y;
+	double	ray_of_dir_x;
+	double	ray_of_dir_y;
+	int		coo_of_squar_map_x;
+	int		coo_of_squar_map_y;
+	double	side_dist_ab_x;
+	double	side_dist_ab_y;
+	double	delta_dist_plus_one_x;
+	double	delta_dist_plus_one_y;
+	double	perp_wall_dist_lenght_of_ray;
+	int		one_step_X;
+	int		one_step_y;
+	int		hit_wall;
+	int		y_or_x_side_of_wall_hit;
 // 	double posX;
 // 	double posY;
 // 	double dirX;
@@ -36,7 +61,7 @@ typedef	struct		s_win
 
 // 	double time;
 // 	double oldtime;
-// }
+}					t_cal;
 
 // void	init_mlx_var(t_win *e);
 // void	init_mlx(t_win *e);
