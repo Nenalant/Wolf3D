@@ -6,9 +6,14 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
-# include <math.c>
+# include <math.h>
 
 // # define PUT_STRING(fd, s) (write(fd, s, sizeof(s) - 1))
+
+# define UP 126
+# define DOWN 125
+# define RIGHT 124
+# define LEFT 123
 
 typedef	struct		s_win
 {
@@ -26,6 +31,14 @@ typedef	struct		s_win
 	int		win_y;
 }					t_win;
 
+typedef	struct		s_color
+{
+	int		num;
+	int		r;
+	int		g;
+	int		b;
+}					t_color;
+
 typedef	struct		s_cal
 {
 	double	pos_of_player_x;
@@ -36,8 +49,10 @@ typedef	struct		s_cal
 	double	cam_plane_of_player_y;
 	double	camera_x;
 	int		x;
+	int		y;
 	int		w;
-	double	ray_pox_x;
+	int		h;
+	double	ray_pos_x;
 	double	ray_pos_y;
 	double	ray_of_dir_x;
 	double	ray_of_dir_y;
@@ -48,24 +63,15 @@ typedef	struct		s_cal
 	double	delta_dist_plus_one_x;
 	double	delta_dist_plus_one_y;
 	double	perp_wall_dist_lenght_of_ray;
-	int		one_step_X;
+	int		one_step_x;
 	int		one_step_y;
 	int		hit_wall;
 	int		y_or_x_side_of_wall_hit;
-// 	double posX;
-// 	double posY;
-// 	double dirX;
-// 	double dirY;
-// 	double camX;
-// 	double camY;
-
-// 	double time;
-// 	double oldtime;
+	int		wall_line_height;
+	int		wall_draw_start;
+	int		wall_draw_end;
+	t_color	color;
 }					t_cal;
-
-// void	init_mlx_var(t_win *e);
-// void	init_mlx(t_win *e);
-// int		put_img_to_win(t_win *e);
 
 # define mapWidth 24
 # define mapHeight 24
