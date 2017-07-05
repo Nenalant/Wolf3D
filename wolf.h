@@ -9,7 +9,8 @@
 # include <math.h>
 
 // # define PUT_STRING(fd, s) (write(fd, s, sizeof(s) - 1))
-
+# define w 800
+# define h 600
 # define UP 126
 # define DOWN 125
 # define RIGHT 124
@@ -31,13 +32,10 @@ typedef	struct		s_win
 	int		win_y;
 }					t_win;
 
-typedef	struct		s_color
-{
-	int		num;
-	int		r;
-	int		g;
-	int		b;
-}					t_color;
+// typedef	struct		s_color
+// {
+	
+// }					t_color;
 
 typedef	struct		s_cal
 {
@@ -50,8 +48,6 @@ typedef	struct		s_cal
 	double	camera_x;
 	int		x;
 	int		y;
-	int		w;
-	int		h;
 	double	ray_pos_x;
 	double	ray_pos_y;
 	double	ray_of_dir_x;
@@ -70,7 +66,11 @@ typedef	struct		s_cal
 	int		wall_line_height;
 	int		wall_draw_start;
 	int		wall_draw_end;
-	t_color	color;
+	// t_color	*color;
+	int		color_num;
+	int		r;
+	int		g;
+	int		b;
 }					t_cal;
 
 # define mapWidth 24
