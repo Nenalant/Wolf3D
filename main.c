@@ -70,20 +70,29 @@ int		key_hook(int keycode, t_cal *c)
 	return (0);
 }
 
-int		put_img_to_win(t_win *e)
-{
-	mlx_put_image_to_window(e->mlx, e->win, e->img, 0, 0);
-	return (0);
-}
-
-
 void	put_image(t_win *e, int x, int y)
 {
-	if (x <= 0 || x >= screen_height || y <= 0 || y >= screen_width)
+	if (x <= 0 || x >= H || y <= 0 || y >= W)
 		return ;
 	*(e->data + y * e->size_line + e->bpp / 8 * x) = e->b;
 	*(e->data + y * e->size_line + e->bpp / 8 * x + 1) = e->g;
 	*(e->data + y * e->size_line + e->bpp / 8 * x + 2) = e->r;
+}
+
+void	init_raycast(t_cal *c)
+{
+	c->camera_x = 2 * c->x / (double)(W) - 1;
+	c->ray_pos_x = c->pos_of_player_x;
+	c->ray_pos_y = c->pos_of_player_y;
+	c->ray_of_dir_x = c->dir_of_player_x + c->cam_plane_of_player_x * c->camera_x;
+	c->ray_of_dir_y = c->dir_of_player_y + c->cam_plane_of_player_y * c->camera_x;
+	c->coo_of_squar_map_x = (int)c->ray_pos_x;
+	c->coo_of_squar_map_y = (int)c->ray_pos_y;
+	c->delta_dist_plus_one_x = sqrt(1 + (c->ray_of_dir_y * c->ray_of_dir_y)
+		/ (c->ray_of_dir_x * c->ray_of_dir_x));
+	c->delta_dist_plus_one_y = sqrt(1 + (c->ray_of_dir_x * c->ray_of_dir_x)
+		/ (c->ray_of_dir_y * c->ray_of_dir_y));
+	c->hit_wall = 0;
 }
 
 void	direction(t_cal *c)
@@ -135,7 +144,14 @@ void	dda_start(t_cal *c)
 	}
 }
 
-void	calcul_of_dist_to_wall(t_cal *c)
+void	set_wall_color(t_cal *c, int r, int g, int b)
+{
+	c->color.r = r;
+	c->color.g = g;
+	c->color.b = b;
+}
+
+void	calcul_of_dist_to_wall_and_wall_height(t_cal *c)
 {
 	if (c->y_or_x_side_of_wall_hit == 0)
 		c->perp_wall_dist_lenght_of_ray = (c->coo_of_squar_map_x - c->ray_pos_x
@@ -143,94 +159,44 @@ void	calcul_of_dist_to_wall(t_cal *c)
 	else
 		c->perp_wall_dist_lenght_of_ray = (c->coo_of_squar_map_y - c->ray_pos_y
 			+ (1 - c->one_step_y) / 2) / c->ray_of_dir_y;
-}
 
-void	calcul_of_wall_height(t_cal *c)
-{
-	c->wall_line_height = (int)(c->h / c->perp_wall_dist_lenght_of_ray);
-	c->wall_draw_start = -(c->wall_line_height) / 2 + c->h / 2;
+	c->wall_line_height = (int)(H / c->perp_wall_dist_lenght_of_ray);
+	c->wall_draw_start = -(c->wall_line_height) / 2 + H / 2;
 	if (c->wall_draw_start < 0)
 		c->wall_draw_start = 0;
-	c->wall_draw_end = c->wall_line_height / 2 + c->h / 2;
-	if (c->wall_draw_end >= c->h)
-		c->wall_draw_end = c->h - 1;
+	c->wall_draw_end = c->wall_line_height / 2 + H / 2;
+	if (c->wall_draw_end >= H)
+		c->wall_draw_end = H - 1;
+
+	if (c->y_or_x_side_of_wall_hit == 0 && c->ray_of_dir_x > 0)
+		set_wall_color(c, 102, 255, 255); //baby blue
+	else if (c->y_or_x_side_of_wall_hit == 0 && c->ray_of_dir_x < 0)
+		set_wall_color(c, 255, 204, 255); //baby pink
+	else if (c->y_or_x_side_of_wall_hit == 1 && c->ray_of_dir_x > 0)
+		set_wall_color(c, 255, 255, 102); //baby yellow
+	else
+		set_wall_color(c, 0, 255, 0); //razer green
 }
 
-void	colors(t_cal *c)
-{
-	if (c->color.num == 0) //black
-	{
-		c->color.r = 0xFF;
-		c->color.g = 0xFF;
-		c->color.b = 0xFF;
-	}
-	else if (c->color.num == 1) //blue
-	{
-		c->color.r = 0x00;
-		c->color.g = 0x00;
-		c->color.b = 0xFF;
-	}
-	else if (c->color.num == 2) //green
-	{
-		c->color.r = 0x00;
-		c->color.g = 0xFF;
-		c->color.b = 0x00;
-	}
-	else if (c->color.num == 3) //yellow
-	{
-		c->color.r = 0xFF;
-		c->color.g = 0xFF;
-		c->color.b = 0x00;
-	}
-	else if (c->color.num == 4) //cyan
-	{
-		c->color.r = 0x00;
-		c->color.g = 0xFF;
-		c->color.b = 0xFF;
-	}
-	else if (c->color.num == 5) //magenta
-	{
-		c->color.r = 0xFF;
-		c->color.g = 0x00;
-		c->color.b = 0xFF;
-	}
-}
+// void	put_calc_in(t_cal *c)
+// {
 
-void	set_wall_color(t_cal *c)
-{
-	colors(c);
-	// if (c->y_or_x_side_of_wall_hit == 1)
-	// 	c->color. = c->color / 2;
-}
+// }
 
 void	gameloop(t_cal *c, t_win *e)
-{
+{	
 	c->x = -1;
-	while (c->x++ < c->w)
+	mlx_clear_window(e->mlx, e->window);
+
+	while (c->x++ < W)
 	{
-		c->camera_x = 2 * c->x / (double)(c->w) - 1;
-		c->ray_pos_x = c->pos_of_player_x;
-		c->ray_pos_y = c->pos_of_player_y;
-		c->ray_of_dir_x = c->dir_of_player_x + c->cam_plane_of_player_x * c->camera_x;
-		c->ray_of_dir_y = c->dir_of_player_y + c->cam_plane_of_player_y * c->camera_x;
-
-		c->coo_of_squar_map_x = (int)c->ray_pos_x;
-		c->coo_of_squar_map_y = (int)c->ray_pos_y;
-
-		c->delta_dist_plus_one_x = sqrt(1 + (c->ray_of_dir_y * c->ray_of_dir_y)
-			/ (c->ray_of_dir_x * c->ray_of_dir_x));
-		c->delta_dist_plus_one_y = sqrt(1 + (c->ray_of_dir_x * c->ray_of_dir_x)
-			/ (c->ray_of_dir_y * c->ray_of_dir_y));
-		c->hit_wall = 0;
+		init_raycast(c);
 		direction(c);
 		dda_start(c);
-		calcul_of_dist_to_wall(c);
-		calcul_of_wall_height(c);
-		// c->color.num = worldMap[c->x][c->y];
-		set_wall_color(c);
-	put_image(e, c->x, c->y);
-	put_img_to_win(e);
+		calcul_of_dist_to_wall_and_wall_height(c);
+		// put_calc_in(c)
 	}
+	mlx_put_image_to_window(e->mlx, e->window, e->img, 0, 0);
 }
 
 // void	draw(t_win *e, t_cal *c)
@@ -239,10 +205,10 @@ void	gameloop(t_cal *c, t_win *e)
 // 	e->g = 0x66;
 // 	e->b = 0xFF;
 // 	c->x = -1;
-// 	while (c->x++ < c->w)
+// 	while (c->x++ < W)
 // 	{
 // 		c->y = -1;
-// 		while (c->y++ < c->h)
+// 		while (c->y++ < H)
 // 		{
 // 			if (c->x > 0)
 // 			{
@@ -271,12 +237,12 @@ void	init_mlx(t_win *e, t_cal *c)
 {
 	if (!(e->mlx = mlx_init()))
 		ft_put_error();
-	if (!(e->win = mlx_new_window(e->mlx, screen_width, screen_height, "WOLF3D")))
+	if (!(e->window = mlx_new_window(e->mlx, W, H, "WOLF3D")))
 		ft_put_error();
-	e->img = mlx_new_image(e->mlx, screen_width, screen_height);
+	e->img = mlx_new_image(e->mlx, W, H);
 	e->data = mlx_get_data_addr(e->img, &e->bpp, &e->size_line, &e->endian);
-	mlx_hook(e->win, 2, 3, key_hook, &c);
-	mlx_hook(e->win, 17, 0, red_cross, &e);
+	mlx_hook(e->window, 2, 3, key_hook, &c);
+	mlx_hook(e->window, 17, 0, red_cross, &e);
 }
 
 int		main(void)
@@ -284,14 +250,11 @@ int		main(void)
 	t_win	e;
 	t_cal	c;
 
-	c.w = screen_width;
-	c.h = screen_height;
-
 	init_var(&c);
 	init_mlx(&e, &c);
 	gameloop(&c, &e);
 	put_image(&e, c.x, c.y);
-	put_img_to_win(&e);
+	mlx_put_image_to_window(e.mlx, e.window, e.img, 0, 0);
 	mlx_loop(e.mlx);
 	return (0);
 }

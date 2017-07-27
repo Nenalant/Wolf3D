@@ -17,7 +17,7 @@
 
 typedef	struct		s_win
 {
-	void	*win;
+	void	*window;
 	void	*img;
 	char	*data;
 	void	*mlx;
@@ -73,8 +73,8 @@ typedef	struct		s_cal
 	t_color	color;
 }					t_cal;
 
-# define screen_width 640
-# define screen_height 480
+# define W 640
+# define H 480
 # define mapWidth 24
 # define mapHeight 24
 
