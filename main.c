@@ -14,15 +14,72 @@ int		red_cross(t_win *e)
 	return (0);
 }
 
+int		key_hook(int keycode, t_cal *c)
+{
+	printf("key = %d\n", keycode);
+	if (keycode == 53)
+		exit(0);
+	else if (keycode == 126) //forward
+	{
+		if (!(worldMap[(int)c->pos_of_player_x + (int)c->dir_of_player_x]
+			[(int)c->pos_of_player_y]))
+			c->pos_of_player_x += c->dir_of_player_x;
+		if (!(worldMap[(int)c->pos_of_player_x]
+			[(int)c->pos_of_player_y  + (int)c->dir_of_player_y]))
+			c->pos_of_player_y += c->dir_of_player_y;
+	}
+	else if (keycode == 125) //backwards
+	{
+		if (!(worldMap[(int)c->pos_of_player_x - (int)c->dir_of_player_x]
+			[(int)c->pos_of_player_y]))
+			c->pos_of_player_x -= c->dir_of_player_x;
+		if (!(worldMap[(int)c->pos_of_player_x]
+			[(int)c->pos_of_player_y  - (int)c->dir_of_player_y]))
+			c->pos_of_player_y -= c->dir_of_player_y;
+	}
+	else if (keycode == 124) //RIGHT
+	{
+		double	old_dir_x;
+		double	old_plane_x;
+
+		old_dir_x = c->dir_of_player_x;
+		c->dir_of_player_x = c->dir_of_player_x * cos(-6.0)
+			- c->dir_of_player_y* sin(-6.0);
+		old_plane_x = c->cam_plane_of_player_x;
+		c->cam_plane_of_player_x = c->cam_plane_of_player_x * cos(-6.0)
+			- c->cam_plane_of_player_y * sin(-6.0);
+		c->cam_plane_of_player_y = old_plane_x * sin(-6.0)
+			+ c->cam_plane_of_player_y * cos(6.0);
+	}
+	else if (keycode == 123) //LEFT
+	{
+		double	old_dir_x;
+		double	old_plane_x;
+
+		old_dir_x = c->dir_of_player_x;
+		c->dir_of_player_x = c->dir_of_player_x * cos(6.0)
+			- c->dir_of_player_y * sin(6.0);
+		c->dir_of_player_y = old_dir_x * sin(6.0)
+			+ c->dir_of_player_y * cos(6.0);
+		old_plane_x = c->cam_plane_of_player_x;
+		c->cam_plane_of_player_x = c->cam_plane_of_player_x * cos(6.0)
+			- c->cam_plane_of_player_y * sin(6.0);
+		c->cam_plane_of_player_y = old_plane_x * sin(6.0)
+			+ c->cam_plane_of_player_y * cos(6.0);
+	}
+	return (0);
+}
+
 int		put_img_to_win(t_win *e)
 {
 	mlx_put_image_to_window(e->mlx, e->win, e->img, 0, 0);
 	return (0);
 }
 
+
 void	put_image(t_win *e, int x, int y)
 {
-	if (x <= 0 || x >= h || y <= 0 || y >= w)
+	if (x <= 0 || x >= screen_height || y <= 0 || y >= screen_width)
 		return ;
 	*(e->data + y * e->size_line + e->bpp / 8 * x) = e->b;
 	*(e->data + y * e->size_line + e->bpp / 8 * x + 1) = e->g;
@@ -57,6 +114,27 @@ void	direction(t_cal *c)
 	}
 }
 
+void	dda_start(t_cal *c)
+{
+	while (c->hit_wall == 0)
+	{
+		if (c->side_dist_ab_x < c->side_dist_ab_y)
+		{
+			c->side_dist_ab_x += c->delta_dist_plus_one_x;
+			c->coo_of_squar_map_x += c->one_step_x;
+			c->y_or_x_side_of_wall_hit = 0;
+		}
+		else
+		{
+			c->side_dist_ab_y += c->delta_dist_plus_one_y;
+			c->coo_of_squar_map_y += c->one_step_y;
+			c->y_or_x_side_of_wall_hit = 1;
+		}
+		if (worldMap[c->coo_of_squar_map_x][c->coo_of_squar_map_y] > 0)
+			c->hit_wall = 1;
+	}
+}
+
 void	calcul_of_dist_to_wall(t_cal *c)
 {
 	if (c->y_or_x_side_of_wall_hit == 0)
@@ -69,52 +147,52 @@ void	calcul_of_dist_to_wall(t_cal *c)
 
 void	calcul_of_wall_height(t_cal *c)
 {
-	c->wall_line_height = (int)(h / c->perp_wall_dist_lenght_of_ray);
-	c->wall_draw_start = -(c->wall_line_height) / 2 + h / 2;
+	c->wall_line_height = (int)(c->h / c->perp_wall_dist_lenght_of_ray);
+	c->wall_draw_start = -(c->wall_line_height) / 2 + c->h / 2;
 	if (c->wall_draw_start < 0)
 		c->wall_draw_start = 0;
-	c->wall_draw_end = c->wall_line_height / 2 + h / 2;
-	if (c->wall_draw_end >= h)
-		c->wall_draw_end = h - 1;
+	c->wall_draw_end = c->wall_line_height / 2 + c->h / 2;
+	if (c->wall_draw_end >= c->h)
+		c->wall_draw_end = c->h - 1;
 }
 
 void	colors(t_cal *c)
 {
-	if (c->color_num == 0) //black
+	if (c->color.num == 0) //black
 	{
-		c->r = 0x00;
-		c->g = 0x00;
-		c->b = 0x00;
+		c->color.r = 0xFF;
+		c->color.g = 0xFF;
+		c->color.b = 0xFF;
 	}
-	else if (c->color_num == 1) //blue
+	else if (c->color.num == 1) //blue
 	{
-		c->r = 0x00;
-		c->g = 0x00;
-		c->b = 0xFF;
+		c->color.r = 0x00;
+		c->color.g = 0x00;
+		c->color.b = 0xFF;
 	}
-	else if (c->color_num == 2) //green
+	else if (c->color.num == 2) //green
 	{
-		c->r = 0x00;
-		c->g = 0xFF;
-		c->b = 0x00;
+		c->color.r = 0x00;
+		c->color.g = 0xFF;
+		c->color.b = 0x00;
 	}
-	else if (c->color_num == 3) //yellow
+	else if (c->color.num == 3) //yellow
 	{
-		c->r = 0xFF;
-		c->g = 0xFF;
-		c->b = 0x00;
+		c->color.r = 0xFF;
+		c->color.g = 0xFF;
+		c->color.b = 0x00;
 	}
-	else if (c->color_num == 4) //cyan
+	else if (c->color.num == 4) //cyan
 	{
-		c->r = 0x00;
-		c->g = 0xFF;
-		c->b = 0xFF;
+		c->color.r = 0x00;
+		c->color.g = 0xFF;
+		c->color.b = 0xFF;
 	}
-	else if (c->color_num == 5) //magenta
+	else if (c->color.num == 5) //magenta
 	{
-		c->r = 0xFF;
-		c->g = 0x00;
-		c->b = 0xFF;
+		c->color.r = 0xFF;
+		c->color.g = 0x00;
+		c->color.b = 0xFF;
 	}
 }
 
@@ -125,44 +203,19 @@ void	set_wall_color(t_cal *c)
 	// 	c->color. = c->color / 2;
 }
 
-void	dda_start(t_cal *c)
+void	gameloop(t_cal *c, t_win *e)
 {
-	while (c->hit_wall == 0)
+	c->x = -1;
+	while (c->x++ < c->w)
 	{
-		if (c->side_dist_ab_x < c->side_dist_ab_y)
-		{
-			printf("delta x == %f\t", c->delta_dist_plus_one_x);
-			printf("delta y == %f\n", c->delta_dist_plus_one_y);
-			c->side_dist_ab_x += c->delta_dist_plus_one_x;
-			c->coo_of_squar_map_x += c->one_step_x;
-			c->y_or_x_side_of_wall_hit = 0;
-		}
-		else
-		{
-			printf("delta x == %f\t", c->delta_dist_plus_one_x);
-			printf("delta y == %f\n", c->delta_dist_plus_one_y);
-			c->side_dist_ab_y += c->delta_dist_plus_one_y;
-			c->coo_of_squar_map_y += c->one_step_y;
-			c->y_or_x_side_of_wall_hit = 1;
-		}
-			printf("hit == %d\n", c->hit_wall);
-		if (worldMap[c->coo_of_squar_map_x][c->coo_of_squar_map_y] > 0)
-			c->hit_wall = 1;
-	}
-}
-
-void	gameloop(t_cal *c)
-{
-	while (c->x < w)
-	{
-		c->camera_x = 2 * c->x / w - 1;
+		c->camera_x = 2 * c->x / (double)(c->w) - 1;
 		c->ray_pos_x = c->pos_of_player_x;
 		c->ray_pos_y = c->pos_of_player_y;
 		c->ray_of_dir_x = c->dir_of_player_x + c->cam_plane_of_player_x * c->camera_x;
 		c->ray_of_dir_y = c->dir_of_player_y + c->cam_plane_of_player_y * c->camera_x;
 
-		c->coo_of_squar_map_x = c->ray_pos_x;
-		c->coo_of_squar_map_y = c->ray_pos_y;
+		c->coo_of_squar_map_x = (int)c->ray_pos_x;
+		c->coo_of_squar_map_y = (int)c->ray_pos_y;
 
 		c->delta_dist_plus_one_x = sqrt(1 + (c->ray_of_dir_y * c->ray_of_dir_y)
 			/ (c->ray_of_dir_x * c->ray_of_dir_x));
@@ -173,128 +226,70 @@ void	gameloop(t_cal *c)
 		dda_start(c);
 		calcul_of_dist_to_wall(c);
 		calcul_of_wall_height(c);
+		// c->color.num = worldMap[c->x][c->y];
 		set_wall_color(c);
-		c->x++;
+	put_image(e, c->x, c->y);
+	put_img_to_win(e);
 	}
 }
 
 // void	draw(t_win *e, t_cal *c)
 // {
-// 	// e->r = 0xFF;
-// 	// e->g = 0x66;
-// 	// e->b = 0xFF;
-// 	(void)e;
-// 	printf("hello\n");
-// 	c->x = 0;
-// 	printf("int == %i\n", worldMap[0][0]);
-// 	printf("int == %i\n", worldMap[2][2]);
-// 	// while (c->x < mapWidth)
-// 	// {
-// 		// printf("test\n");
-// 		c->y = 0;
-// 		// while (c->y < mapHeight)
-// 		// {
-// 		// 	c->color_num = worldMap[c->x][c->y];
-// 			gameloop(c);
-// 			put_image(e, c->x, c->y);
-// 			// c->y++;
-// 		// }
-// 		// c->x++;
-// 	// }
+// 	e->r = 0xFF;
+// 	e->g = 0x66;
+// 	e->b = 0xFF;
+// 	c->x = -1;
+// 	while (c->x++ < c->w)
+// 	{
+// 		c->y = -1;
+// 		while (c->y++ < c->h)
+// 		{
+// 			if (c->x > 0)
+// 			{
+// 				
+// 				gameloop(c);
+// 				put_image(e, c->x, c->y);
+// 			}
+// 		}
+// 	}
 // }
 
-int		key_hook(int keycode, t_cal *c)
+void	init_var(t_cal *c)
 {
-	printf("key = %d\n", keycode);
-	if (keycode == 53)
-		exit(0);
-	else if (keycode == 126) //forward
-	{
-		if (!(worldMap[(int)c->pos_of_player_x + (int)c->dir_of_player_x]
-			[(int)c->pos_of_player_y]))
-			c->pos_of_player_x += c->dir_of_player_x;
-		if (!(worldMap[(int)c->pos_of_player_x]
-			[(int)c->pos_of_player_y  + (int)c->dir_of_player_y]))
-			c->pos_of_player_y += c->dir_of_player_y;
-	}
-	else if (keycode == 125) //backwards
-	{
-		if (!(worldMap[(int)c->pos_of_player_x - (int)c->dir_of_player_x]
-			[(int)c->pos_of_player_y]))
-			c->pos_of_player_x -= c->dir_of_player_x;
-		if (!(worldMap[(int)c->pos_of_player_x]
-			[(int)c->pos_of_player_y  - (int)c->dir_of_player_y]))
-			c->pos_of_player_y -= c->dir_of_player_y;
-	}
-	else if (keycode == 124) //RIGHT
-	{
-		double	old_dir_x;
-		double	old_plane_x;
-
-		old_dir_x = c->dir_of_player_x;
-		c->dir_of_player_x = c->dir_of_player_x * cos(-50.0)
-			- c->dir_of_player_y* sin(-50.0);
-		old_plane_x = c->cam_plane_of_player_x;
-		c->cam_plane_of_player_x = c->cam_plane_of_player_x * cos(-50.0)
-			- c->cam_plane_of_player_y * sin(-50.0);
-		c->cam_plane_of_player_y = old_plane_x * sin(-50.0)
-			+ c->cam_plane_of_player_y * cos(50.0);
-	}
-	else if (keycode == 123) //LEFT
-	{
-		double	old_dir_x;
-		double	old_plane_x;
-
-		old_dir_x = c->dir_of_player_x;
-		c->dir_of_player_x = c->dir_of_player_x * cos(50.0)
-			- c->dir_of_player_y * sin(50.0);
-		c->dir_of_player_y = old_dir_x * sin(50.0)
-			+ c->dir_of_player_y * cos(50.0);
-		old_plane_x = c->cam_plane_of_player_x;
-		c->cam_plane_of_player_x = c->cam_plane_of_player_x * cos(50.0)
-			- c->cam_plane_of_player_y * sin(50.0);
-		c->cam_plane_of_player_y = old_plane_x * sin(50.0)
-			+ c->cam_plane_of_player_y * cos(50.0);
-	}
-	gameloop(c);
-	direction(c);
-	dda_start(c);
-	calcul_of_dist_to_wall(c);
-	calcul_of_wall_height(c);
-	set_wall_color(c);
-	return (0);
+	c->pos_of_player_x = 22.0;
+	c->pos_of_player_y = 11.5;
+	c->dir_of_player_x = -1.0;
+	c->dir_of_player_y = 0.0;
+	c->cam_plane_of_player_x = 0.0;
+	c->cam_plane_of_player_y = 0.66;
+	c->color.r = 0xFF;
+	c->color.g = 0x00;
+	c->color.b = 0xFF;
 }
 
-void	init_mlx_var(t_cal *c)
+void	init_mlx(t_win *e, t_cal *c)
 {
-	c->pos_of_player_x = 22;
-	c->pos_of_player_y = 12;
-	c->dir_of_player_x = -1;
-	c->dir_of_player_y = 0;
-	c->cam_plane_of_player_x = 0;
-	c->cam_plane_of_player_y = 0.66;
+	if (!(e->mlx = mlx_init()))
+		ft_put_error();
+	if (!(e->win = mlx_new_window(e->mlx, screen_width, screen_height, "WOLF3D")))
+		ft_put_error();
+	e->img = mlx_new_image(e->mlx, screen_width, screen_height);
+	e->data = mlx_get_data_addr(e->img, &e->bpp, &e->size_line, &e->endian);
+	mlx_hook(e->win, 2, 3, key_hook, &c);
+	mlx_hook(e->win, 17, 0, red_cross, &e);
 }
 
 int		main(void)
 {
-	
 	t_win	e;
 	t_cal	c;
 
-	e.win_x = 800;
-	e.win_y = 600;
+	c.w = screen_width;
+	c.h = screen_height;
 
-	init_mlx_var(&c);
-	if (!(e.mlx = mlx_init()))
-		ft_put_error();
-	if (!(e.win = mlx_new_window(e.mlx, w, h, "WOLF3D")))
-		ft_put_error();
-	e.img = mlx_new_image(e.mlx, w, h);
-	e.data = mlx_get_data_addr(e.img, &e.bpp, &e.size_line, &e.endian);
-	mlx_hook(e.win, 2, 3, key_hook, &c);
-	mlx_hook(e.win, 17, 0, red_cross, &e);
-	// draw(&e, &c);
-	gameloop(&c);
+	init_var(&c);
+	init_mlx(&e, &c);
+	gameloop(&c, &e);
 	put_image(&e, c.x, c.y);
 	put_img_to_win(&e);
 	mlx_loop(e.mlx);
