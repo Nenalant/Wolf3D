@@ -10,10 +10,10 @@
 
 // # define PUT_STRING(fd, s) (write(fd, s, sizeof(s) - 1))
 
-# define UP 126
-# define DOWN 125
-# define RIGHT 124
 # define LEFT 123
+# define RIGHT 124
+# define BACKWARDS 125
+# define FORWARD 126
 
 typedef	struct		s_win
 {
@@ -29,6 +29,8 @@ typedef	struct		s_win
 	int		b;
 	int		win_x;
 	int		win_y;
+	int		i;
+	int		pos;
 }					t_win;
 
 typedef	struct		s_color
