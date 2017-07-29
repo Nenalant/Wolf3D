@@ -15,7 +15,15 @@
 # define BACKWARDS 125
 # define FORWARD 126
 
-typedef	struct		s_win
+typedef	struct		s_color
+{
+	int		num;
+	int		r;
+	int		g;
+	int		b;
+}					t_color;
+
+typedef	struct		s_env
 {
 	void	*window;
 	void	*img;
@@ -31,18 +39,6 @@ typedef	struct		s_win
 	int		win_y;
 	int		i;
 	int		pos;
-}					t_win;
-
-typedef	struct		s_color
-{
-	int		num;
-	int		r;
-	int		g;
-	int		b;
-}					t_color;
-
-typedef	struct		s_cal
-{
 	double	pos_of_player_x;
 	double	pos_of_player_y;
 	double	dir_of_player_x;
@@ -72,8 +68,16 @@ typedef	struct		s_cal
 	int		wall_line_height;
 	int		wall_draw_start;
 	int		wall_draw_end;
+	double		move_speed;
+	double		rot_speed;
 	t_color	color;
-}					t_cal;
+}					t_env;
+
+
+// typedef	struct		s_cal
+// {
+
+// }					t_cal;
 
 # define W 640
 # define H 480
