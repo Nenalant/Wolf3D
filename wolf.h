@@ -7,109 +7,145 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <math.h>
+# include <pthread.h>
 
-// # define PUT_STRING(fd, s) (write(fd, s, sizeof(s) - 1))
-
+# define MAPSIZE 24
+# define W 800
+# define H 600
 # define LEFT 123
 # define RIGHT 124
 # define BACKWARDS 125
 # define FORWARD 126
+# define WEAPON 6
+# define Z 13
+# define S 1
+# define Q 0
+# define D 2
 
 typedef	struct		s_color
 {
-	int		num;
-	int		r;
-	int		g;
-	int		b;
+	int				num;
+	int				r;
+	int				g;
+	int				b;
 }					t_color;
+
+typedef	struct		s_sabre
+{
+	void			*img;
+	char			*data;
+	int				bpp;
+	int				size_line;
+	int				endian;
+}					t_sabre;
+
+typedef	struct		s_grey
+{
+	void			*img;
+	char			*data;
+	int				bpp;
+	int				size_line;
+	int				endian;
+}					t_grey;
+
+typedef	struct		s_etoile
+{
+	void			*img;
+	char			*data;
+	int				bpp;
+	int				size_line;
+	int				endian;
+}					t_etoile;
 
 typedef	struct		s_env
 {
-	void	*window;
-	void	*img;
-	char	*data;
-	void	*mlx;
-	int		bpp;
-	int		size_line;
-	int		endian;
-	int		r;
-	int		g;
-	int		b;
-	int		win_x;
-	int		win_y;
-	int		i;
-	int		pos;
-	double	pos_of_player_x;
-	double	pos_of_player_y;
-	double	dir_of_player_x;
-	double	dir_of_player_y;
-	double	cam_plane_of_player_x;
-	double	cam_plane_of_player_y;
-	double	camera_x;
-	int		x;
-	int		y;
-	int		w;
-	int		h;
-	double	ray_pos_x;
-	double	ray_pos_y;
-	double	ray_of_dir_x;
-	double	ray_of_dir_y;
-	int		coo_of_squar_map_x;
-	int		coo_of_squar_map_y;
-	double	side_dist_ab_x;
-	double	side_dist_ab_y;
-	double	delta_dist_plus_one_x;
-	double	delta_dist_plus_one_y;
-	double	perp_wall_dist_lenght_of_ray;
-	int		one_step_x;
-	int		one_step_y;
-	int		hit_wall;
-	int		y_or_x_side_of_wall_hit;
-	int		wall_line_height;
-	int		wall_draw_start;
-	int		wall_draw_end;
-	double		move_speed;
-	double		rot_speed;
-	t_color	color;
+	void			*win;
+	void			*img;
+	char			*data;
+	void			*mlx;
+	int				bpp;
+	int				size_line;
+	int				endian;
+	int				worldMap[MAPSIZE][MAPSIZE];
+	int				r;
+	int				g;
+	int				b;
+	int				win_x;
+	int				win_y;
+	int				i;
+	int				pos;
+	double			player_posx;
+	double			player_posy;
+	double			player_dirx;
+	double			player_diry;
+	double			player_cam_x;
+	double			player_cam_y;
+	double			camera_x;
+	int				x;
+	int				max_x;
+	int				y;
+	int				w;
+	int				h;
+	double			ray_pos_x;
+	double			ray_pos_y;
+	double			ray_of_dir_x;
+	double			ray_of_dir_y;
+	int				coo_map_x;
+	int				coo_map_y;
+	double			side_dist_ab_x;
+	double			side_dist_ab_y;
+	double			delta_dist_plus_one_x;
+	double			delta_dist_plus_one_y;
+	double			perp_wall_dist_lenght_of_ray;
+	int				one_step_x;
+	int				one_step_y;
+	int				hit_wall;
+	int				ns_ew_side;
+	int				wall_line_height;
+	int				wall_draw_start;
+	int				wall_draw_end;
+	double			move_speed;
+	double			rot_speed;
+	t_color			color;
+
+	struct	s_sabre	sabre;
+	int				s_weight;
+	int				s_height;
+
+	struct	s_grey	grey;
+	int				s_weigh;
+	int				s_heigh;
+
+	struct	s_etoile	etoile;
+	int				s_wei;
+	int				s_hei;
 }					t_env;
 
+void	clean(t_env *e);
+void	ft_put_error(void);
+int		red_cross(t_env *e);
 
-// typedef	struct		s_cal
-// {
+void	init_raycast(t_env *e);
+void	direction(t_env *e);
+void	dda_start(t_env *e);
+void	calcul_wall_dist_and_height(t_env *e);
 
-// }					t_cal;
+void	game_with_weapon(t_env *e);
+void	gameloop(t_env *e);
 
-# define W 640
-# define H 480
-# define mapWidth 24
-# define mapHeight 24
+void	left_and_right(int key, t_env *e);
+void	backwards_and_forwards(int key, t_env *e);
+int		add_weapon(t_env *e);
+int		key_hook(int key, t_env *e);
 
-int worldMap[mapWidth][mapHeight]=
-{
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
+void	set_color(t_env *e, int r, int g, int b);
+void	put_textures(t_env *e);
+void	put_weapon(t_env *e);
+void	init_weapon(t_env *e);
+void	init_sky(t_env *e);
+
+void	init_var(t_env *e);
+void	map_generator(t_env *e);
+void	init_mlx(t_env *e);
 
 #endif

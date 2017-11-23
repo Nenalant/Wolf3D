@@ -14,6 +14,7 @@ NAME = libft.a
 
 SRC = ft_atoi.c \
 	ft_bzero.c \
+	ft_close.c \
 	ft_isalnum.c \
 	ft_isalpha.c \
 	ft_isascii.c \
@@ -28,6 +29,7 @@ SRC = ft_atoi.c \
 	ft_memdel.c \
 	ft_memmove.c \
 	ft_memset.c \
+	ft_open.c \
 	ft_putchar.c \
 	ft_putchar_fd.c \
 	ft_putendl.c \
@@ -71,14 +73,14 @@ OBJ = $(SRC:.c=.o)
 all : $(NAME)
 
 $(NAME) :
-	gcc -Wall -Wextra -Werror -c $(SRC)
-	ar rc $(NAME) $(OBJ)
-	ranlib $(NAME)
+	@gcc -Wall -Wextra -Werror -c $(SRC)
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
 clean :
-	rm -rf $(OBJ)
+	@rm -rf $(OBJ)
 
 fclean : clean
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
 
 re : fclean all
