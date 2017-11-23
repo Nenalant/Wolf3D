@@ -31,18 +31,16 @@ void	backwards_and_forwards(int key, t_env *e)
 {
 	if (key == BACKWARDS || key == S)
 	{
-		if (e->worldMap[(int)e->player_posx - (int)e->player_dirx][(int)e->player_posy] == 0)
+		if (e->worldMap[(int)(e->player_posx - e->player_dirx * (e->move_speed))][(int)e->player_posy] == 0)
 			e->player_posx -= e->player_dirx * e->move_speed;
-		if (e->worldMap[(int)e->player_posx][(int)e->player_posy  - (int)e->player_diry] == 0)
+		if (e->worldMap[(int)e->player_posx][(int)(e->player_posy - e->player_diry * (e->move_speed))] == 0)
 			e->player_posy -= e->player_diry * e->move_speed;
 	}
 	else if (key == FORWARD || key == Z)
 	{
-		if (e->worldMap[(int)e->player_posx + (int)e->player_dirx][(int)e->player_posy] == 0
-			|| e->worldMap[(int)e->player_posx + (int)e->player_dirx][(int)e->player_posy] == 3)
+		if (e->worldMap[(int)(e->player_posx + e->player_dirx * (e->move_speed))][(int)e->player_posy] == 0)
 			e->player_posx += e->player_dirx * e->move_speed;
-		if (e->worldMap[(int)e->player_posx][(int)e->player_posy  + (int)e->player_diry] == 0
-			|| e->worldMap[(int)e->player_posx][(int)e->player_posy  + (int)e->player_diry] == 3)
+		if (e->worldMap[(int)e->player_posx][(int)(e->player_posy + e->player_diry * (e->move_speed))] == 0)
 			e->player_posy += e->player_diry * e->move_speed;
 	}
 }
