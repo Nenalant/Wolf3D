@@ -8,12 +8,12 @@ MLX = minilibx_macos/libmlx.a
 LIBFT = libft/libft.a
 OBJ = $(SRC:.c=.o)
 SRC =	main.c \
-		map_generator.c \
-		gameloop.c \
-		game_generator.c \
-		textures.c \
-		key_hook.c \
-		errors.c
+		w_map_generator.c \
+		w_gameloop.c \
+		w_game_generator.c \
+		w_textures.c \
+		w_key_hook.c \
+		w_errors.c
 
 all : $(NAME)
 
