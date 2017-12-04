@@ -6,7 +6,7 @@
 /*   By: alanteri <alanteri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 17:45:19 by alanteri          #+#    #+#             */
-/*   Updated: 2017/12/04 19:48:00 by alanteri         ###   ########.fr       */
+/*   Updated: 2017/12/04 19:49:59 by alanteri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	put_weapon(t_env *e)
 	while (i < e->s_height)
 	{
 		j = 0;
-		while (j < e->s_weight) //&& e->data[j] != "fX"
+		while (j < e->s_weight)
 		{
 			pos_i = 4 * (W - e->s_weight + j) + e->size_line
 			* (H - e->s_height + i);
