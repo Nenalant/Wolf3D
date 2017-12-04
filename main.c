@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alanteri <alanteri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/04 17:15:41 by alanteri          #+#    #+#             */
+/*   Updated: 2017/12/04 18:09:48 by alanteri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "wolf.h"
 
@@ -27,9 +38,9 @@ void	init_mlx(t_env *e)
 
 int		main(int ac, char **av)
 {
-	(void)av;
 	t_env	e;
 
+	(void)av;
 	if (ac == 1)
 	{
 		map_generator(&e);
@@ -40,8 +51,9 @@ int		main(int ac, char **av)
 		gameloop(&e);
 		mlx_hook(e.win, 2, 3, key_hook, &e);
 		mlx_hook(e.win, 17, 0, red_cross, &e);
-		mlx_string_put(e.mlx, e.win, W/3, H/3, 0x00FF00, "PRESS AN ARROW KEY TO START");
-		mlx_string_put(e.mlx, e.win, W/16, H/20, 0xFF0000, "Welcome !");
+		mlx_string_put(e.mlx, e.win, W / 3, H / 3, 0x00FF00,
+			"PRESS AN ARROW KEY TO START");
+		mlx_string_put(e.mlx, e.win, W / 16, H / 20, 0xFF0000, "Welcome !");
 		mlx_loop(e.mlx);
 	}
 	else

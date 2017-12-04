@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   w_game_generator.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alanteri <alanteri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/04 17:45:08 by alanteri          #+#    #+#             */
+/*   Updated: 2017/12/04 18:56:37 by alanteri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "wolf.h"
 
 void	init_raycast(t_env *e)
@@ -60,7 +72,7 @@ void	dda_start(t_env *e)
 			e->coo_map_y += e->one_step_y;
 			e->ns_ew_side = 1;
 		}
-		if (e->worldMap[e->coo_map_x][e->coo_map_y] > 0)
+		if (e->worldmap[e->coo_map_x][e->coo_map_y] > 0)
 			e->hit_wall = 1;
 	}
 }
@@ -73,7 +85,6 @@ void	calcul_wall_dist_and_height(t_env *e)
 	else
 		e->perp_wall_dist_lenght_of_ray = fabs((e->coo_map_y - e->ray_pos_y
 			+ (1 - e->one_step_y) / 2) / e->ray_of_dir_y);
-
 	e->wall_line_height = abs((int)(H / e->perp_wall_dist_lenght_of_ray));
 	e->wall_draw_start = -(e->wall_line_height) / 2 + H / 2;
 	if (e->wall_draw_start < 0)
@@ -81,13 +92,12 @@ void	calcul_wall_dist_and_height(t_env *e)
 	e->wall_draw_end = e->wall_line_height / 2 + H / 2;
 	if (e->wall_draw_end >= H)
 		e->wall_draw_end = H - 1;
-
 	if (e->ns_ew_side == 0 && e->ray_of_dir_x > 0)
-		set_color(e, 51, 255, 51); //menth green
+		set_color(e, 51, 255, 51);
 	else if (e->ns_ew_side == 0 && e->ray_of_dir_x < 0)
-		set_color(e, 225, 102, 225); //clear pink
+		set_color(e, 225, 102, 225);
 	else if (e->ns_ew_side == 1 && e->ray_of_dir_y > 0)
-		set_color(e, 0, 204, 255); //clear blue
+		set_color(e, 0, 204, 255);
 	else if (e->ns_ew_side == 1 && e->ray_of_dir_y < 0)
-		set_color(e, 153, 0, 204); //lila
+		set_color(e, 153, 0, 204);
 }

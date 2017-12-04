@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   w_gameloop.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alanteri <alanteri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/04 17:08:32 by alanteri          #+#    #+#             */
+/*   Updated: 2017/12/04 17:45:51 by alanteri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "wolf.h"
 
 void	gameloop(t_env *e)
-{	
+{
 	mlx_clear_window(e->mlx, e->win);
 	e->x = 0;
-
 	while (e->x < W)
 	{
 		init_raycast(e);
@@ -18,10 +29,9 @@ void	gameloop(t_env *e)
 }
 
 void	game_with_weapon(t_env *e)
-{	
+{
 	mlx_clear_window(e->mlx, e->win);
 	e->x = 0;
-
 	while (e->x < W)
 	{
 		put_weapon(e);

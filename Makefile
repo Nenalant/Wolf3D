@@ -2,7 +2,7 @@
 
 NAME = wolf3d
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3
 LFLAGS = -framework OpenGL -framework AppKit
 MLX = minilibx_macos/libmlx.a
 LIBFT = libft/libft.a
@@ -28,6 +28,7 @@ wolf3d : $(LIBFT) $(MLX) $(OBJ)
 
 $(LIBFT) :
 	@make -C libft/
+	@make -C minilibx_macos/
 	@echo "\033[32mLibrairies compilated\033[0m"
 
 $(MLX) :
@@ -38,6 +39,7 @@ $(MLX) :
 clean :
 	@rm -rf *.o
 	@make -C libft/ clean
+	@make -C minilibx_macos/ clean
 	@echo "\033[32mObjects deleted\nLibraries cleaned\033[0m"
 
 fclean : clean
