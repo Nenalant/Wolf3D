@@ -21,6 +21,8 @@
 # include <math.h>
 # include <pthread.h>
 
+# define texW 64
+# define texH 64
 # define MAPSIZE 24
 # define W 800
 # define H 600
@@ -42,23 +44,59 @@ typedef	struct			s_color
 	int					b;
 }						t_color;
 
-typedef	struct			s_sabre
+typedef	struct			s_gun
 {
 	void				*img;
 	char				*data;
 	int					bpp;
 	int					size_line;
 	int					endian;
-}						t_sabre;
+}						t_gun;
 
-typedef	struct			s_grey
+typedef	struct			s_wall
 {
 	void				*img;
 	char				*data;
 	int					bpp;
 	int					size_line;
 	int					endian;
-}						t_grey;
+}						t_wall;
+
+typedef	struct			s_mossy_r
+{
+	void				*img;
+	char				*data;
+	int					bpp;
+	int					size_line;
+	int					endian;
+}						t_mossy_r;
+
+typedef	struct			s_mossy_y
+{
+	void				*img;
+	char				*data;
+	int					bpp;
+	int					size_line;
+	int					endian;
+}						t_mossy_y;
+
+typedef	struct			s_mossy_g
+{
+	void				*img;
+	char				*data;
+	int					bpp;
+	int					size_line;
+	int					endian;
+}						t_mossy_g;
+
+typedef	struct			s_mossy_w
+{
+	void				*img;
+	char				*data;
+	int					bpp;
+	int					size_line;
+	int					endian;
+}						t_mossy_w;
 
 typedef	struct			s_etoile
 {
@@ -118,19 +156,28 @@ typedef	struct			s_env
 	int					wall_draw_end;
 	double				move_speed;
 	double				rot_speed;
+	char				**wall_color;
+	// int					mossy;
 	t_color				color;
 
-	struct s_sabre		sabre;
+	struct s_gun		gun;
 	int					s_weight;
 	int					s_height;
 
-	struct s_grey		grey;
+	struct s_wall		wall;
 	int					s_weigh;
 	int					s_heigh;
 
 	struct s_etoile		etoile;
 	int					s_wei;
 	int					s_hei;
+
+	struct s_mossy_r	mossy_r;
+	struct s_mossy_y	mossy_y;
+	struct s_mossy_g	mossy_g;
+	struct s_mossy_w	mossy_w;
+
+
 }						t_env;
 
 void					clean(t_env *e);
@@ -151,11 +198,17 @@ void					backwards_and_forwards(int key, t_env *e);
 int						add_weapon(t_env *e);
 int						key_hook(int key, t_env *e);
 
+void					init_wall_tab(t_env *e);
 void					set_color(t_env *e, int r, int g, int b);
 void					put_textures(t_env *e);
 void					put_weapon(t_env *e);
+void					init_wall(t_env *e);
 void					init_weapon(t_env *e);
 void					init_sky(t_env *e);
+void					init_mossy_r(t_env *e);
+void					init_mossy_y(t_env *e);
+void					init_mossy_g(t_env *e);
+void					init_mossy_w(t_env *e);
 
 void					init_var(t_env *e);
 void					map_generator(t_env *e);

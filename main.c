@@ -48,6 +48,11 @@ int		main(int ac, char **av)
 		init_mlx(&e);
 		init_weapon(&e);
 		init_sky(&e);
+		init_wall(&e);
+		init_mossy_r(&e);
+		init_mossy_y(&e);
+		init_mossy_g(&e);
+		init_mossy_w(&e);
 		gameloop(&e);
 		mlx_hook(e.win, 2, 3, key_hook, &e);
 		mlx_hook(e.win, 17, 0, red_cross, &e);

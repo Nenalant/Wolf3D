@@ -93,11 +93,11 @@ void	calcul_wall_dist_and_height(t_env *e)
 	if (e->wall_draw_end >= H)
 		e->wall_draw_end = H - 1;
 	if (e->ns_ew_side == 0 && e->ray_of_dir_x > 0)
-		set_color(e, 51, 255, 51);
+		e->wall.data = e->mossy_w.data;
 	else if (e->ns_ew_side == 0 && e->ray_of_dir_x < 0)
-		set_color(e, 225, 102, 225);
+		e->wall.data = e->mossy_y.data;
 	else if (e->ns_ew_side == 1 && e->ray_of_dir_y > 0)
-		set_color(e, 0, 204, 255);
+		e->wall.data = e->mossy_g.data;
 	else if (e->ns_ew_side == 1 && e->ray_of_dir_y < 0)
-		set_color(e, 153, 0, 204);
+		e->wall.data = e->mossy_r.data;
 }
