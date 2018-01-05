@@ -26,6 +26,7 @@
 # define MAPSIZE 24
 # define W 800
 # define H 600
+# define CHANGE_MAP 46
 # define LEFT 123
 # define RIGHT 124
 # define BACKWARDS 125
@@ -124,6 +125,7 @@ typedef	struct			s_env
 	int					win_y;
 	int					i;
 	int					pos;
+	int					pos_sky;
 	double				player_posx;
 	double				player_posy;
 	double				player_dirx;
@@ -194,10 +196,10 @@ void					calcul_wall_dist_and_height(t_env *e);
 void					game_with_weapon(t_env *e);
 void					gameloop(t_env *e);
 
+void					turn(t_env *e, double var, double var2);
+void					walk_forward(t_env *e);
 void					left_and_right(int key, t_env *e);
-void					or_right(int key, t_env *e);
 void					backwards_and_forwards(int key, t_env *e);
-int						add_weapon(t_env *e);
 int						key_hook(int key, t_env *e);
 
 void					init_weapon(t_env *e);

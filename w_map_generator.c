@@ -12,6 +12,23 @@
 
 #include "wolf.h"
 
+static int	test_pos_player(t_env *e, int i, int j)
+{
+	if (rand() % 12 == 1
+		&& (e->player_posx != i && e->player_posy != j)
+		&& (e->player_posx != j && e->player_posy != i)
+		&& (e->player_posx + 1 != i && e->player_posy + 1 != j)
+		&& (e->player_posx - 1 != i && e->player_posy - 1 != j)
+		&& (e->player_posx + 1 != i && e->player_posy != j)
+		&& (e->player_posx - 1 != i && e->player_posy != j)
+		&& (e->player_posx != i && e->player_posy + 1 != j)
+		&& (e->player_posx != i && e->player_posy - 1 != j)
+		&& (e->player_posx + 1 != i && e->player_posy - 1 != j)
+		&& (e->player_posx - 1 != i && e->player_posy + 1 != j))
+		return (1);
+	return (0);
+}
+
 void		map_generator(t_env *e)
 {
 	int		i;
@@ -25,8 +42,7 @@ void		map_generator(t_env *e)
 		{
 			if (i == 0 || i == MAPSIZE - 1 || j == 0 || j == MAPSIZE - 1)
 				e->worldmap[j][i] = 1;
-			else if (rand() % 12 == 1 && e->player_posx != i &&
-					e->player_posy != j)
+			else if (test_pos_player(e, i, j))
 				e->worldmap[j][i] = 1;
 			else
 				e->worldmap[j][i] = 0;

@@ -62,18 +62,16 @@ void	drawing_wall(t_env *e)
 
 void	put_textures(t_env *e)
 {
-	int		pos_sky;
-
 	e->i = -1;
 	while (e->i++ < H)
 	{
 		e->pos = (e->i * e->size_line) + e->x * (e->bpp / 8);
-		pos_sky = (e->i * e->etoile.size_line) + e->x * (e->etoile.bpp / 8);
+		e->pos_sky = (e->i * e->etoile.size_line) + e->x * (e->etoile.bpp / 8);
 		if (e->i < e->wall_draw_start)
 		{
-			e->data[e->pos + 2] = e->etoile.data[pos_sky + 2];
-			e->data[e->pos + 1] = e->etoile.data[pos_sky + 1];
-			e->data[e->pos] = e->etoile.data[pos_sky];
+			e->data[e->pos + 2] = e->etoile.data[e->pos_sky + 2];
+			e->data[e->pos + 1] = e->etoile.data[e->pos_sky + 1];
+			e->data[e->pos] = e->etoile.data[e->pos_sky];
 		}
 		if (e->i >= e->wall_draw_start && e->i < e->wall_draw_end)
 			drawing_wall(e);

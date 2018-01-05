@@ -54,9 +54,9 @@ int		main(int ac, char **av)
 	(void)av;
 	if (ac == 1)
 	{
-		map_generator(&e);
 		init_var(&e);
 		init_mlx(&e);
+		map_generator(&e);
 		init_textures(&e);
 		gameloop(&e);
 		mlx_hook(e.win, 2, 3, key_hook, &e);

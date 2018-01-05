@@ -14,7 +14,6 @@
 
 void	gameloop(t_env *e)
 {
-	mlx_clear_window(e->mlx, e->win);
 	e->x = 0;
 	while (e->x < W)
 	{
@@ -30,7 +29,6 @@ void	gameloop(t_env *e)
 
 void	game_with_weapon(t_env *e)
 {
-	mlx_clear_window(e->mlx, e->win);
 	e->x = 0;
 	while (e->x < W)
 	{

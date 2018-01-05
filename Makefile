@@ -2,7 +2,7 @@
 
 NAME = wolf3d
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g3
+CFLAGS = -Wall -Wextra -Werror
 LFLAGS = -framework OpenGL -framework AppKit
 MLX = minilibx_macos/libmlx.a
 LIBFT = libft/libft.a
