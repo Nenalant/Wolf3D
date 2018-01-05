@@ -11,7 +11,9 @@ SRC =	main.c \
 		w_map_generator.c \
 		w_gameloop.c \
 		w_game_generator.c \
+		w_wall_textures.c \
 		w_textures.c \
+		w_weapon.c \
 		w_key_hook.c \
 		w_errors.c
 
@@ -29,7 +31,7 @@ wolf3d : $(LIBFT) $(MLX) $(OBJ)
 $(LIBFT) :
 	@make -C libft/
 	@make -C minilibx_macos/
-	@echo "\033[32mLibrairies compilated\033[0m"
+	@echo "\033[32mLibrairies compiled\033[0m"
 
 $(MLX) :
 	@make -C minilibx_macos/

@@ -21,8 +21,8 @@
 # include <math.h>
 # include <pthread.h>
 
-# define texW 64
-# define texH 64
+# define TEXW 64
+# define TEXH 64
 # define MAPSIZE 24
 # define W 800
 # define H 600
@@ -157,7 +157,11 @@ typedef	struct			s_env
 	double				move_speed;
 	double				rot_speed;
 	char				**wall_color;
-	// int					mossy;
+	int					tex_x;
+	int					d;
+	int					tex_y;
+	double				wall_x;
+	int					w_i;
 	t_color				color;
 
 	struct s_gun		gun;
@@ -176,8 +180,6 @@ typedef	struct			s_env
 	struct s_mossy_y	mossy_y;
 	struct s_mossy_g	mossy_g;
 	struct s_mossy_w	mossy_w;
-
-
 }						t_env;
 
 void					clean(t_env *e);
@@ -198,20 +200,24 @@ void					backwards_and_forwards(int key, t_env *e);
 int						add_weapon(t_env *e);
 int						key_hook(int key, t_env *e);
 
-void					init_wall_tab(t_env *e);
-void					set_color(t_env *e, int r, int g, int b);
-void					put_textures(t_env *e);
-void					put_weapon(t_env *e);
-void					init_wall(t_env *e);
 void					init_weapon(t_env *e);
+void					put_weapon(t_env *e);
+
 void					init_sky(t_env *e);
+void					set_color(t_env *e, int r, int g, int b);
+void					drawing_wall(t_env *e);
+void					put_textures(t_env *e);
+
+void					init_wall(t_env *e);
 void					init_mossy_r(t_env *e);
 void					init_mossy_y(t_env *e);
 void					init_mossy_g(t_env *e);
 void					init_mossy_w(t_env *e);
 
 void					init_var(t_env *e);
-void					map_generator(t_env *e);
 void					init_mlx(t_env *e);
+void					init_textures(t_env *e);
+
+void					map_generator(t_env *e);
 
 #endif

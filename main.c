@@ -36,6 +36,17 @@ void	init_mlx(t_env *e)
 	e->data = mlx_get_data_addr(e->img, &e->bpp, &e->size_line, &e->endian);
 }
 
+void	init_textures(t_env *e)
+{
+	init_weapon(e);
+	init_sky(e);
+	init_wall(e);
+	init_mossy_r(e);
+	init_mossy_y(e);
+	init_mossy_g(e);
+	init_mossy_w(e);
+}
+
 int		main(int ac, char **av)
 {
 	t_env	e;
@@ -46,13 +57,7 @@ int		main(int ac, char **av)
 		map_generator(&e);
 		init_var(&e);
 		init_mlx(&e);
-		init_weapon(&e);
-		init_sky(&e);
-		init_wall(&e);
-		init_mossy_r(&e);
-		init_mossy_y(&e);
-		init_mossy_g(&e);
-		init_mossy_w(&e);
+		init_textures(&e);
 		gameloop(&e);
 		mlx_hook(e.win, 2, 3, key_hook, &e);
 		mlx_hook(e.win, 17, 0, red_cross, &e);
